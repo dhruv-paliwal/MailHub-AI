@@ -42,5 +42,10 @@ export const API_URLS = {
 summarizeEmail: {
     endpoint: 'ai/summarize',
     method: 'POST'
+},
+
+generateReply: {
+    endpoint: 'ai/generate-reply',
+    method: 'POST'
 }
 }

@@ -168,3 +168,51 @@ ${body}
 
 };
 
+
+export const generateReply = async (req, res) => {
+
+    try {
+
+        const { body } = req.body;
+
+
+        const completion = await client.chat.completions.create({
+
+            model: "poolside/laguna-xs-2.1:free",
+
+            messages: [
+                {
+                    role: "user",
+                    content: `
+Generate a professional reply to this email.
+
+Keep the reply polite and concise.
+Return ONLY the reply email.
+
+Email:
+
+${body}
+`
+                }
+            ]
+
+        });
+
+
+        res.json({
+            reply: completion.choices[0].message.content.trim()
+        });
+
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            error: "Failed to generate reply"
+        });
+
+    }
+
+};
+

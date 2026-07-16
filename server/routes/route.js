@@ -12,7 +12,8 @@ import {
     generateSubject,
     improveWriting,
     changeTone,
-    summarizeEmail
+    summarizeEmail,
+    generateReply
 } from '../controller/ai-controller.js';
 
 
@@ -41,5 +42,6 @@ routes.post('/ai/change-tone', changeTone);
 
 routes.post('/ai/summarize', summarizeEmail);
 
+routes.post('/ai/generate-reply', generateReply);
 
 export default routes;
