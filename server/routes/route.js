@@ -1,4 +1,5 @@
 import express from 'express';
+import Email from '../model/email.js';
 
 import { 
     saveSendEmails, 
@@ -43,5 +44,30 @@ routes.post('/ai/change-tone', changeTone);
 routes.post('/ai/summarize', summarizeEmail);
 
 routes.post('/ai/generate-reply', generateReply);
+
+routes.get('/create-test-email', async (req, res) => {
+    try {
+        const testEmail = new Email({
+            to: "dhruv@gmail.com",
+            from: "john@gmail.com",
+            subject: "Project Report",
+            body: "Hi Dhruv, Can you please send me the project report by tomorrow?",
+            date: new Date(),
+            image: "",
+            name: "John",
+            starred: false,
+            bin: false,
+            type: "inbox"
+        });
+
+        await testEmail.save();
+
+        res.send("Test email created successfully");
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.message);
+    }
+});
 
 export default routes;

@@ -17,17 +17,22 @@ export const getEmails = async (request, response) => {
 
         if (request.params.type === 'starred') {
             emails = await Email.find({ starred: true, bin: false });
+
         } else if (request.params.type === 'bin') {
-            emails = await Email.find({ bin: true })
+            emails = await Email.find({ bin: true });
+
         } else if (request.params.type === 'allmail') {
             emails = await Email.find({});
+
         } else if (request.params.type === 'inbox') {
-            emails = [];
+            emails = await Email.find({ type: 'inbox', bin: false });
+
         } else {
             emails = await Email.find({ type: request.params.type });
         }
 
         response.status(200).json(emails);
+
     } catch (error) {
         response.status(500).json(error.message);
     }

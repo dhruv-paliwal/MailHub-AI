@@ -32,10 +32,10 @@ const EmailSchema = mongoose.Schema({
     },
     type: {
         type: String,
-        required: true,
+        required: true
     }
-})
+});
 
-const email = mongoose.model('emails', EmailSchema);
+const Email = mongoose.model('emails', EmailSchema);
 
-export default email;
+export default Email;
