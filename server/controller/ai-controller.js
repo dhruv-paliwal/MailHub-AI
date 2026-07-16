@@ -66,3 +66,52 @@ Return ONLY the improved email.`
         res.status(500).json(err);
     }
 };
+
+
+export const changeTone = async (req, res) => {
+
+    try {
+
+        const { body, tone } = req.body;
+
+
+        const completion = await client.chat.completions.create({
+
+            model: "poolside/laguna-xs-2.1:free",
+
+            messages: [
+                {
+                    role: "user",
+                    content: `
+Rewrite the following email in a ${tone} tone.
+
+Keep the meaning exactly the same.
+Return ONLY the rewritten email.
+
+Email:
+
+${body}
+`
+                }
+            ]
+
+        });
+
+
+        res.json({
+            body: completion.choices[0].message.content.trim()
+        });
+
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            error: "Failed to change tone"
+        });
+
+    }
+
+};
+

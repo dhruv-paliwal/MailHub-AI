@@ -27,5 +27,15 @@ export const API_URLS = {
     generateSubject: {
         endpoint: 'ai/generate-subject',
         method: 'POST'
-    }
+    },
+
+    improveWriting: {
+        endpoint: 'ai/improve-writing',
+        method: 'POST'
+    },
+
+    changeTone: {
+    endpoint: 'ai/change-tone',
+    method: 'POST'
+}
 }
