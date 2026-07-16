@@ -113,5 +113,58 @@ ${body}
 
     }
 
+
+
+
+};
+
+
+export const summarizeEmail = async (req, res) => {
+
+    try {
+
+        const { body } = req.body;
+
+
+        const completion = await client.chat.completions.create({
+
+            model: "poolside/laguna-xs-2.1:free",
+
+            messages: [
+                {
+                    role: "user",
+                    content: `
+Summarize this email.
+
+Give:
+- Short summary
+- Important points
+- Required actions
+
+Email:
+
+${body}
+`
+                }
+            ]
+
+        });
+
+
+        res.json({
+            summary: completion.choices[0].message.content.trim()
+        });
+
+
+    } catch(err){
+
+        console.error(err);
+
+        res.status(500).json({
+            error:"Failed to summarize email"
+        });
+
+    }
+
 };
 

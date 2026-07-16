@@ -37,5 +37,10 @@ export const API_URLS = {
     changeTone: {
     endpoint: 'ai/change-tone',
     method: 'POST'
+},
+
+summarizeEmail: {
+    endpoint: 'ai/summarize',
+    method: 'POST'
 }
 }

@@ -8,11 +8,11 @@ import {
     moveEmailsToBin 
 } from '../controller/email-controller.js';
 
-
-import { 
+import {
     generateSubject,
     improveWriting,
-    changeTone
+    changeTone,
+    summarizeEmail
 } from '../controller/ai-controller.js';
 
 
@@ -32,12 +32,14 @@ routes.delete('/delete', deleteEmails);
 routes.post('/bin', moveEmailsToBin);
 
 
-// AI routes
+// AI Routes
 routes.post('/ai/generate-subject', generateSubject);
 
 routes.post('/ai/improve-writing', improveWriting);
 
 routes.post('/ai/change-tone', changeTone);
+
+routes.post('/ai/summarize', summarizeEmail);
 
 
 export default routes;

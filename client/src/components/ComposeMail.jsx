@@ -95,6 +95,7 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
     const generateSubjectService = useApi(API_URLS.generateSubject);
     const improveWritingService = useApi(API_URLS.improveWriting);
     const changeToneService = useApi(API_URLS.changeTone);
+    const summarizeEmailService = useApi(API_URLS.summarizeEmail);
 
 
 
@@ -196,6 +197,33 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
         closeMenu();
 
         };
+
+        const handleSummarize = async () => {
+
+    if (!data.body) {
+        alert("Please write something first.");
+        return;
+    }
+
+
+    const response = await summarizeEmailService.call({
+        body: data.body
+    });
+
+
+    if(response?.summary){
+
+        setData(prev => ({
+            ...prev,
+            body: response.summary
+        }));
+
+    }
+
+
+    closeMenu();
+
+};
 
 
 
@@ -405,9 +433,9 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
                         </MenuItem>
 
 
-                        <MenuItem onClick={closeMenu}>
-                            📄 Summarize
-                        </MenuItem>
+                        <MenuItem onClick={handleSummarize}>
+📄 Summarize
+</MenuItem>
 
 
                         <MenuItem onClick={() => handleToneChange("friendly")}>
