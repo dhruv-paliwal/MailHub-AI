@@ -22,5 +22,10 @@ export const API_URLS = {
     moveEmailsToBin: {
         endpoint: 'bin',
         method: 'POST'
+    },
+
+    generateSubject: {
+        endpoint: 'ai/generate-subject',
+        method: 'POST'
     }
 }

@@ -12,9 +12,10 @@ const useApi = (urlObject) => {
         setError("");
         
         try {
-            let res = await API(urlObject, payload, type);
-            setResponse(res.data);
-        } catch (error) {
+    let res = await API(urlObject, payload, type);
+    setResponse(res.data);
+    return res.data;  
+} catch (error) {
             setError(error.message);
         } finally {
             setIsLoading(false);

@@ -2,6 +2,7 @@ import express from 'express';
 
 import { saveSendEmails, getEmails, toggleStarredEmail, deleteEmails, 
     moveEmailsToBin } from '../controller/email-controller.js';
+import { generateSubject } from '../controller/ai-controller.js';
 
 const routes = express.Router();
 
@@ -12,4 +13,5 @@ routes.post('/starred', toggleStarredEmail);
 routes.delete('/delete', deleteEmails);
 routes.post('/bin', moveEmailsToBin);
 
+routes.post('/ai/generate-subject', generateSubject);
 export default routes;

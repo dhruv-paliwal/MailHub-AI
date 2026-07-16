@@ -77,7 +77,8 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
     };
 
     const sentEmailService = useApi(API_URLS.saveSentEmails);
-const saveDraftService = useApi(API_URLS.saveDraftEmails);
+    const saveDraftService = useApi(API_URLS.saveDraftEmails);
+    const generateSubjectService = useApi(API_URLS.generateSubject);
 
     const config = {
         Username: process.env.REACT_APP_USERNAME,
@@ -89,6 +90,26 @@ const saveDraftService = useApi(API_URLS.saveDraftEmails);
     const onValueChange = (e) => {
         setData({ ...data, [e.target.name]: e.target.value })
     }
+
+    const handleGenerateSubject = async () => {
+    if (!data.body) {
+        alert("Please write the email body first.");
+        return;
+    }
+
+    const response = await generateSubjectService.call({
+        body: data.body
+    });
+
+    if (response?.subject) {
+        setData(prev => ({
+            ...prev,
+            subject: response.subject
+        }));
+    }
+
+    closeMenu();
+};
 
     const sendEmail = async (e) => {
         e.preventDefault();
@@ -193,7 +214,9 @@ const saveDraftService = useApi(API_URLS.saveDraftEmails);
             onClose={closeMenu}
         >
             <MenuItem onClick={closeMenu}>📝 Improve Writing</MenuItem>
-            <MenuItem onClick={closeMenu}>📌 Generate Subject</MenuItem>
+            <MenuItem onClick={handleGenerateSubject}>
+    📌 Generate Subject
+</MenuItem>
             <MenuItem onClick={closeMenu}>📄 Summarize</MenuItem>
             <MenuItem onClick={closeMenu}>😊 Friendly Tone</MenuItem>
             <MenuItem onClick={closeMenu}>💼 Professional Tone</MenuItem>
