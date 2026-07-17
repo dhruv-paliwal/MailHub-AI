@@ -1,12 +1,13 @@
 import express from 'express';
 import Email from '../model/email.js';
 
-import { 
-    saveSendEmails, 
-    getEmails, 
-    toggleStarredEmail, 
-    deleteEmails, 
-    moveEmailsToBin 
+import {
+    saveSendEmails,
+    getEmails,
+    toggleStarredEmail,
+    deleteEmails,
+    moveEmailsToBin,
+    searchEmails
 } from '../controller/email-controller.js';
 
 import {
@@ -27,6 +28,8 @@ routes.post('/save', saveSendEmails);
 routes.post('/save-draft', saveSendEmails);
 
 routes.get('/emails/:type', getEmails);
+
+routes.get('/search', searchEmails);
 
 routes.post('/starred', toggleStarredEmail);
 

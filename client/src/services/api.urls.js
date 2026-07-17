@@ -52,5 +52,10 @@ generateReply: {
 smartReplies: {
     endpoint: 'ai/smart-replies',
     method: 'POST'
+},
+
+searchEmails: {
+    endpoint: "search",
+    method: "GET"
 }
 }

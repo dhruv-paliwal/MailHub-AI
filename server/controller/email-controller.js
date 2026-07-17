@@ -63,3 +63,37 @@ export const moveEmailsToBin = async (request, response) => {
         response.status(500).json(error.message);   
     }
 }
+
+export const searchEmails = async (request, response) => {
+
+    try {
+
+        const { query } = request.query;
+
+        const emails = await Email.find({
+
+            $or: [
+
+                { subject: { $regex: query, $options: "i" } },
+
+                { body: { $regex: query, $options: "i" } },
+
+                { from: { $regex: query, $options: "i" } },
+
+                { to: { $regex: query, $options: "i" } },
+
+                { name: { $regex: query, $options: "i" } }
+
+            ]
+
+        });
+
+        response.status(200).json(emails);
+
+    } catch (error) {
+
+        response.status(500).json(error.message);
+
+    }
+
+};
