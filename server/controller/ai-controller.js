@@ -175,7 +175,6 @@ export const generateReply = async (req, res) => {
 
         const { body } = req.body;
 
-
         const completion = await client.chat.completions.create({
 
             model: "poolside/laguna-xs-2.1:free",
@@ -198,11 +197,9 @@ ${body}
 
         });
 
-
         res.json({
             reply: completion.choices[0].message.content.trim()
         });
-
 
     } catch (err) {
 
@@ -216,3 +213,59 @@ ${body}
 
 };
 
+export const generateSmartReplies = async (req, res) => {
+
+    try {
+
+        const { body } = req.body;
+
+        const completion = await client.chat.completions.create({
+
+            model: "poolside/laguna-xs-2.1:free",
+
+            messages: [
+                {
+                    role: "user",
+                    content: `
+Read the email below and generate exactly 3 different professional reply options.
+
+Return ONLY a JSON array like this:
+
+[
+  "Reply option 1",
+  "Reply option 2",
+  "Reply option 3"
+]
+
+Email:
+
+${body}
+`
+                }
+            ]
+
+        });
+
+        let replies;
+
+        try {
+            replies = JSON.parse(completion.choices[0].message.content);
+        } catch {
+            replies = [completion.choices[0].message.content];
+        }
+
+        res.json({
+            replies
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            error: "Failed to generate smart replies"
+        });
+
+    }
+
+};

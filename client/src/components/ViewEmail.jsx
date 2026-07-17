@@ -1,8 +1,17 @@
 import { useState } from 'react';
-import { Box, Typography, styled, Button, TextField } from '@mui/material';
+import {
+    Box,
+    Typography,
+    styled,
+    Button,
+    TextField,
+    CircularProgress,
+    Snackbar,
+    Alert
+} from '@mui/material';
 import { useOutletContext, useLocation } from 'react-router-dom';
 import { emptyProfilePic } from '../constants/constant';
-import { ArrowBack, Delete } from '@mui/icons-material';
+import { ArrowBack, Delete, ContentCopy } from '@mui/icons-material';
 import useApi from '../hooks/useApi';
 import { API_URLS } from '../services/api.urls';
 
@@ -62,40 +71,75 @@ const ViewEmail = () => {
 
     const [reply, setReply] = useState("");
 
+    const [smartReplies, setSmartReplies] = useState([]);
+
     const [summary, setSummary] = useState("");
 
+    const [replyLoading, setReplyLoading] = useState(false);
+    const [summaryLoading, setSummaryLoading] = useState(false);
+
     const generateReplyService = useApi(API_URLS.generateReply);
+
+    const smartRepliesService = useApi(API_URLS.smartReplies);
 
     const summarizeEmailService = useApi(API_URLS.summarizeEmail);
 
     const saveSentEmailsService = useApi(API_URLS.saveSentEmails);
 
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
 
     const handleGenerateReply = async () => {
 
-        console.log("Generate Reply clicked");
-        console.log("Email body:", email.body);
+    setReplyLoading(true);
+
+    try {
 
         const response = await generateReplyService.call({
             body: email.body
         });
 
-        console.log("AI Response:", response);
-
         if (response?.reply) {
             setReply(response.reply);
         }
 
-    };
+    } finally {
 
-    const handleSummarizeEmail = async () => {
+        setReplyLoading(false);
 
-    const response = await summarizeEmailService.call({
+    }
+};
+
+const handleSmartReplies = async () => {
+
+    const response = await smartRepliesService.call({
         body: email.body
     });
 
-    if (response?.summary) {
-        setSummary(response.summary);
+    if (response?.replies) {
+        setSmartReplies(response.replies);
+    }
+
+};
+
+    const handleSummarizeEmail = async () => {
+
+    setSummaryLoading(true);
+
+    try {
+
+        const response = await summarizeEmailService.call({
+            body: email.body
+        });
+
+        if (response?.summary) {
+            setSummary(response.summary);
+        }
+
+    } finally {
+
+        setSummaryLoading(false);
+
     }
 };
 
@@ -117,9 +161,23 @@ const ViewEmail = () => {
         const response = await saveSentEmailsService.call(emailData);
 
         if (response) {
-        alert("Reply sent successfully!");
-        }
+    setSnackbarMessage("Reply sent successfully!");
+setSnackbarOpen(true);
+}
     };
+
+
+    const handleCopyReply = async () => {
+
+    try {
+        await navigator.clipboard.writeText(reply);
+        setSnackbarMessage("Reply copied to clipboard!");
+setSnackbarOpen(true);
+    } catch (error) {
+        console.log(error);
+    }
+
+};
 
 
     return (
@@ -215,6 +273,7 @@ const ViewEmail = () => {
                     <Button
     variant="outlined"
     onClick={handleSummarizeEmail}
+    disabled={summaryLoading}
     sx={{
         mt: 2,
         mr: 2,
@@ -222,21 +281,88 @@ const ViewEmail = () => {
         borderRadius: "18px"
     }}
 >
-    ✨ Summarize
+    {summaryLoading ? (
+        <CircularProgress size={20} />
+    ) : (
+        "✨ Summarize"
+    )}
 </Button>
 
 
-                    <Button
-                        variant="outlined"
-                        onClick={handleGenerateReply}
-                        sx={{
-                            marginTop: 3,
-                            textTransform: "none",
-                            borderRadius: "18px"
-                        }}
-                    >
-                        ✨ Generate AI Reply
-                    </Button>
+                   <Button
+    variant="outlined"
+    onClick={handleGenerateReply}
+    disabled={replyLoading}
+    sx={{
+        marginTop: 3,
+        textTransform: "none",
+        borderRadius: "18px"
+    }}
+>
+    {replyLoading ? (
+        <CircularProgress size={20} />
+    ) : (
+        "✨ Generate AI Reply"
+    )}
+</Button>
+
+
+<Button
+    variant="outlined"
+    onClick={handleSmartReplies}
+    sx={{
+        mt: 2,
+        textTransform: "none",
+        borderRadius: "18px"
+    }}
+>
+    ✨ Smart Replies
+</Button>
+{smartReplies.length > 0 && (
+
+    <Box sx={{ mt: 3 }}>
+
+        <Typography
+            variant="h6"
+            sx={{ mb: 2 }}
+        >
+            AI Smart Replies
+        </Typography>
+
+        {smartReplies.map((item, index) => (
+
+            <Box
+                key={index}
+                sx={{
+                    border: "1px solid #ddd",
+                    borderRadius: 2,
+                    p: 2,
+                    mb: 2
+                }}
+            >
+
+                <Typography>
+                    {item}
+                </Typography>
+
+                <Button
+                    variant="contained"
+                    sx={{
+                        mt: 2,
+                        textTransform: "none"
+                    }}
+                    onClick={() => setReply(item)}
+                >
+                    Use this Reply
+                </Button>
+
+            </Box>
+
+        ))}
+
+    </Box>
+
+)}
 
 
                     {reply && (
@@ -252,18 +378,37 @@ const ViewEmail = () => {
             }}
         />
 
-        <Button
-            variant="contained"
-            onClick={handleSendReply}
-            sx={{
-                mt: 2,
-                width: 160,
-                borderRadius: "18px",
-                textTransform: "none"
-            }}
-        >
-            Send Reply
-        </Button>
+        <Box
+    sx={{
+        display: "flex",
+        gap: 2,
+        mt: 2
+    }}
+>
+    <Button
+        variant="contained"
+        onClick={handleSendReply}
+        sx={{
+            width: 160,
+            borderRadius: "18px",
+            textTransform: "none"
+        }}
+    >
+        Send Reply
+    </Button>
+
+    <Button
+        variant="outlined"
+        startIcon={<ContentCopy />}
+        onClick={handleCopyReply}
+        sx={{
+            borderRadius: "18px",
+            textTransform: "none"
+        }}
+    >
+        Copy Reply
+    </Button>
+</Box>
     </>
 )}
                     
@@ -271,6 +416,24 @@ const ViewEmail = () => {
                 </Container>
 
             </Box>
+
+            <Snackbar
+    open={snackbarOpen}
+    autoHideDuration={3000}
+    onClose={() => setSnackbarOpen(false)}
+    anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "center"
+    }}
+>
+    <Alert
+    severity="success"
+    onClose={() => setSnackbarOpen(false)}
+    sx={{ width: "100%" }}
+>
+    {snackbarMessage}
+</Alert>
+</Snackbar>
 
         </Box>
     );

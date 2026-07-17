@@ -47,5 +47,10 @@ summarizeEmail: {
 generateReply: {
     endpoint: 'ai/generate-reply',
     method: 'POST'
+},
+
+smartReplies: {
+    endpoint: 'ai/smart-replies',
+    method: 'POST'
 }
 }

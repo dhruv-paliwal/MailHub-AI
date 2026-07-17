@@ -14,7 +14,8 @@ import {
     improveWriting,
     changeTone,
     summarizeEmail,
-    generateReply
+    generateReply,
+    generateSmartReplies
 } from '../controller/ai-controller.js';
 
 
@@ -44,6 +45,8 @@ routes.post('/ai/change-tone', changeTone);
 routes.post('/ai/summarize', summarizeEmail);
 
 routes.post('/ai/generate-reply', generateReply);
+
+routes.post('/ai/smart-replies', generateSmartReplies);
 
 routes.get('/create-test-email', async (req, res) => {
     try {
