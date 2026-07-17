@@ -46,7 +46,7 @@ const Container = styled(Box)({
     }
 });
 
-const Date = styled(Typography)({
+const EmailDate = styled(Typography)({
     margin: '0 50px 0 auto',
     fontSize: 12,
     color: '#5E5E5E'
@@ -62,7 +62,13 @@ const ViewEmail = () => {
 
     const [reply, setReply] = useState("");
 
+    const [summary, setSummary] = useState("");
+
     const generateReplyService = useApi(API_URLS.generateReply);
+
+    const summarizeEmailService = useApi(API_URLS.summarizeEmail);
+
+    const saveSentEmailsService = useApi(API_URLS.saveSentEmails);
 
 
     const handleGenerateReply = async () => {
@@ -80,6 +86,39 @@ const ViewEmail = () => {
             setReply(response.reply);
         }
 
+    };
+
+    const handleSummarizeEmail = async () => {
+
+    const response = await summarizeEmailService.call({
+        body: email.body
+    });
+
+    if (response?.summary) {
+        setSummary(response.summary);
+    }
+};
+
+    const handleSendReply = async () => {
+
+    const emailData = {
+        to: email.from,
+        from: email.to,
+        subject: "Re: " + email.subject,
+        body: reply,
+        date: new Date(),
+        image: "",
+        name: email.to.split('@')[0],
+        starred: false,
+        bin: false,
+        type: "sent"
+        };
+
+        const response = await saveSentEmailsService.call(emailData);
+
+        if (response) {
+        alert("Reply sent successfully!");
+        }
     };
 
 
@@ -135,13 +174,13 @@ const ViewEmail = () => {
                         </Typography>
 
 
-                        <Date>
+                        <EmailDate>
                             {(new window.Date(email.date)).getDate()}&nbsp;
                             {(new window.Date(email.date))
                                 .toLocaleString('default', { month: 'long' })
                             }&nbsp;
                             {(new window.Date(email.date)).getFullYear()}
-                        </Date>
+                        </EmailDate>
 
                     </Box>
 
@@ -149,6 +188,42 @@ const ViewEmail = () => {
                     <Typography style={{ marginTop: 20 }}>
                         {email.body}
                     </Typography>
+
+
+                    {summary && (
+    <Box
+        sx={{
+            mt: 2,
+            p: 2,
+            backgroundColor: "#f5f5f5",
+            borderRadius: 2,
+            border: "1px solid #ddd"
+        }}
+    >
+        <Typography fontWeight="bold">
+            AI Summary
+        </Typography>
+
+        <Typography sx={{ mt: 1 }}>
+            {summary}
+        </Typography>
+    </Box>
+)}
+
+
+
+                    <Button
+    variant="outlined"
+    onClick={handleSummarizeEmail}
+    sx={{
+        mt: 2,
+        mr: 2,
+        textTransform: "none",
+        borderRadius: "18px"
+    }}
+>
+    ✨ Summarize
+</Button>
 
 
                     <Button
@@ -165,17 +240,33 @@ const ViewEmail = () => {
 
 
                     {reply && (
-                        <TextField
-                            multiline
-                            rows={5}
-                            fullWidth
-                            value={reply}
-                            onChange={(e) => setReply(e.target.value)}
-                            sx={{
-                                marginTop: 3
-                            }}
-                        />
-                    )}
+    <>
+        <TextField
+            multiline
+            rows={5}
+            fullWidth
+            value={reply}
+            onChange={(e) => setReply(e.target.value)}
+            sx={{
+                marginTop: 3
+            }}
+        />
+
+        <Button
+            variant="contained"
+            onClick={handleSendReply}
+            sx={{
+                mt: 2,
+                width: 160,
+                borderRadius: "18px",
+                textTransform: "none"
+            }}
+        >
+            Send Reply
+        </Button>
+    </>
+)}
+                    
 
                 </Container>
 
