@@ -65,11 +65,11 @@ An AI-powered email management platform built using the MERN stack and OpenRoute
 
 ### Smart Replies
 
-![Smart Replies](screenshots/AI smart Replies.png)
+![Smart Replies](screenshots/AIsmartReplies.png)
 
 ### AI Reply
 
-![Reply](screenshots/Generate AI reply.png)
+![Reply](screenshots/GenerateAIreply.png)
 
 ---
 
