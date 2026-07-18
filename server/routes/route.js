@@ -1,5 +1,11 @@
 import express from 'express';
+import auth from "../middleware/auth.js";
 import Email from '../model/email.js';
+
+import {
+    signup,
+    login
+} from "../controller/auth-controller.js";
 
 import {
     saveSendEmails,
@@ -22,20 +28,30 @@ import {
 
 const routes = express.Router();
 
+routes.get("/test", (req, res) => {
+    res.json({
+        message: "Backend is working!"
+    });
+});
 
-routes.post('/save', saveSendEmails);
+routes.post("/signup", signup);
 
-routes.post('/save-draft', saveSendEmails);
+routes.post("/login", login);
 
-routes.get('/emails/:type', getEmails);
 
-routes.get('/search', searchEmails);
+routes.post('/save', auth, saveSendEmails);
 
-routes.post('/starred', toggleStarredEmail);
+routes.post('/save-draft', auth, saveSendEmails);
 
-routes.delete('/delete', deleteEmails);
+routes.get('/emails/:type', auth, getEmails);
 
-routes.post('/bin', moveEmailsToBin);
+routes.get('/search', auth, searchEmails);
+
+routes.post('/starred', auth, toggleStarredEmail);
+
+routes.delete('/delete', auth, deleteEmails);
+
+routes.post('/bin', auth, moveEmailsToBin);
 
 
 // AI Routes
@@ -75,5 +91,7 @@ routes.get('/create-test-email', async (req, res) => {
         res.status(500).send(error.message);
     }
 });
+
+console.log("✅ Auth routes loaded");
 
 export default routes;

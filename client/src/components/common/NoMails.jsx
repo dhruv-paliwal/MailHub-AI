@@ -15,11 +15,11 @@ const StyledDivider = styled(Divider)({
     marginTop: 10
 })
 
-const NoMails = ({ message }) => {
+const NoMails = ({ message = {} }) => {
     return (
         <Component>
-            <Typography>{message.heading}</Typography>
-            <Typography>{message.subHeading}</Typography>
+            <Typography>{message.heading || "No emails"}</Typography>
+<Typography>{message.subHeading || "Your mailbox is empty"}</Typography>
             <StyledDivider />
         </Component>
     )

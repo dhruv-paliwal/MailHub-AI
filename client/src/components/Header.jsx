@@ -6,6 +6,9 @@ import { Menu as MenuIcon, Tune, HelpOutlineOutlined, SettingsOutlined,
 
 import { gmailLogo } from '../constants/constant';
 
+import { Logout } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+
 const StyledAppBar = styled(AppBar)`
     background: #ffffff;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
@@ -39,6 +42,17 @@ const OptionsWrapper = styled(Box)`
 
 const Header = ({ toggleDrawer }) => {
 
+    const navigate = useNavigate();
+
+const handleLogout = () => {
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/login");
+
+};
+
     return (
         <StyledAppBar position="static">
             <Toolbar>
@@ -65,7 +79,13 @@ const Header = ({ toggleDrawer }) => {
                     <HelpOutlineOutlined sx={{ color: "#2563EB" }} />
                     <SettingsOutlined sx={{ color: "#2563EB" }} />
                     <AppsOutlined sx={{ color: "#2563EB" }} />
-                    <AccountCircleOutlined sx={{ color: "#2563EB" }} />
+                    <Logout
+    sx={{
+        color: "#2563EB",
+        cursor: "pointer"
+    }}
+    onClick={handleLogout}
+/>
                </OptionsWrapper>
             </Toolbar>
         </StyledAppBar>

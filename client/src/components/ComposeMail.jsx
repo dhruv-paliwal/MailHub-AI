@@ -229,90 +229,82 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
 
     const sendEmail = async (e) => {
 
-        e.preventDefault();
+    e.preventDefault();
+
+    const sentPayload = {
+
+        to: data.to,
+        from: "codeforinterview03@gmail.com",
+        subject: data.subject,
+        body: data.body,
+        date: new Date(),
+        image: '',
+        name: 'Code for Interview',
+        starred: false,
+        bin: false,
+        type: 'sent'
+
+    };
 
 
-        if (window.Email) {
+    const inboxPayload = {
 
-            window.Email.send({
+        to: data.to,
+        from: "codeforinterview03@gmail.com",
+        subject: data.subject,
+        body: data.body,
+        date: new Date(),
+        image: '',
+        name: 'Code for Interview',
+        starred: false,
+        bin: false,
+        type: 'inbox'
 
-                ...config,
-                To: data.to,
-                From: "codeforinterview03@gmail.com",
-                Subject: data.subject,
-                Body: data.body
-
-            }).then(
-                message => alert(message)
-            );
-        }
-
-
-
-        const payload = {
-
-            to: data.to,
-            from: "codeforinterview03@gmail.com",
-            subject: data.subject,
-            body: data.body,
-            date: new Date(),
-            image: '',
-            name: 'Code for Interview',
-            starred: false,
-            type: 'sent'
-
-        }
+    };
 
 
+    const sentResponse = await sentEmailService.call(sentPayload);
 
-        sentEmailService.call(payload);
+    const inboxResponse = await sentEmailService.call(inboxPayload);
 
 
-        if (!sentEmailService.error) {
+    if (sentResponse && inboxResponse) {
 
-            setOpenDrawer(false);
-            setData({});
-
-        }
+        setOpenDrawer(false);
+        setData({});
 
     }
 
+};
 
 
 
-    const closeComposeMail = (e) => {
+const closeComposeMail = async (e) => {
 
-        e.preventDefault();
+    e.preventDefault();
 
+    const payload = {
 
-        const payload = {
+        to: data.to,
+        from: "codeforinterview03@gmail.com",
+        subject: data.subject,
+        body: data.body,
+        date: new Date(),
+        image: '',
+        name: 'Code for Interview',
+        starred: false,
+        bin: false,
+        type: 'drafts'
 
-            to: data.to,
-            from: "codeforinterview03@gmail.com",
-            subject: data.subject,
-            body: data.body,
-            date: new Date(),
-            image: '',
-            name: 'Code for Interview',
-            starred: false,
-            type: 'drafts'
-
-        }
-
-
-
-        saveDraftService.call(payload);
+    };
 
 
-        if (!saveDraftService.error) {
+    await saveDraftService.call(payload);
 
-            setOpenDrawer(false);
-            setData({});
+    setOpenDrawer(false);
+    setData({});
 
-        }
-
-    }
-
+};
 
 
     return (

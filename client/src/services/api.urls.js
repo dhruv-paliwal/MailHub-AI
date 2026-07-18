@@ -1,4 +1,16 @@
 export const API_URLS = {
+
+
+    signup: {
+    endpoint: 'signup',
+    method: 'POST'
+},
+
+login: {
+    endpoint: 'login',
+    method: 'POST'
+},
+
     saveSentEmails: {
         endpoint: 'save',
         method: 'POST'

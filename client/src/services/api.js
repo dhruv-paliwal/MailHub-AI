@@ -8,10 +8,15 @@ const API_GMAIL = async (serviceUrlObject, requestData = {}, type = '') => {
         ? `${API_URI}/${serviceUrlObject.endpoint}/${type}`
         : `${API_URI}/${serviceUrlObject.endpoint}`;
 
+    const token = localStorage.getItem("token");
+
     return await axios({
         method: serviceUrlObject.method,
         url,
-        data: requestData
+        data: requestData,
+        headers: {
+            Authorization: token ? `Bearer ${token}` : ""
+        }
     });
 }
 
